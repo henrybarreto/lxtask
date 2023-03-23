@@ -21,4 +21,15 @@ lxtask_SOURCES = \
 
 lxtask_CFLAGS =	$(GTK_CFLAGS)
 
-lxtask_LDADD = $(GTK_LIBS)
+external.o: external.rs 
+	rustc $< --crate-type staticlib --emit obj -C panic=abort -C overflow-checks=no -o $@
+
+lxtask_LDADD = $(GTK_LIBS) external.o
+
+RUST_LIBSTD_PATH = $(shell rustc --print sysroot)/lib
+
+RUST_LIBSTD_BASENAME = $(notdir $(basename $(shell ls $(RUST_LIBSTD_PATH)/libstd-*.so)))
+
+RUST_LIBSTD_NAME = $(patsubst lib%,%,$(basename $(RUST_LIBSTD_BASENAME)))
+
+lxtask_LDFLAGS = -L$(RUST_LIBSTD_PATH) -l$(RUST_LIBSTD_NAME)

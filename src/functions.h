@@ -42,8 +42,15 @@
 #define PROC_DIR_2 "/emul/linux/proc"
 #define PROC_DIR_3 "/proc"
 
+struct GPUInfo {
+    gdouble gpu_usage;
+    gint gpu_mem_total;
+    gint gpu_mem_used;
+};
+
 gboolean refresh_task_list(void);
 gdouble get_cpu_usage(system_status *sys_stat);
+struct GPUInfo get_gpu_info();
 
 /* Configurationfile support */
 void load_config(void);

@@ -33,8 +33,12 @@ GtkWidget *mainmenu;
 GtkWidget *taskpopup;
 GtkWidget *cpu_usage_progress_bar;
 GtkWidget *mem_usage_progress_bar;
+GtkWidget *gpu_usage_progress_bar;
+GtkWidget *gpu_mem_usage_progress_bar;
 GtkWidget *cpu_usage_progress_bar_box;
 GtkWidget *mem_usage_progress_bar_box;
+GtkWidget *gpu_usage_progress_bar_box;
+GtkWidget *gpu_mem_usage_progress_bar_box;
 
 GtkTreeViewColumn *column;
 
@@ -62,6 +66,7 @@ GtkWidget* create_main_window (void)
     GtkWidget *button3;
 
     GtkWidget *system_info_box;
+    GtkWidget *gpu_info_box;
 
     window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title (GTK_WINDOW (window), _("Task Manager"));
@@ -128,6 +133,10 @@ GtkWidget* create_main_window (void)
     gtk_widget_show (system_info_box);
     gtk_box_pack_start (GTK_BOX (vbox1), system_info_box, FALSE, TRUE, 0);
 
+    gpu_info_box = gtk_hbox_new (TRUE, 10);
+    gtk_widget_show (gpu_info_box);
+    gtk_box_pack_start (GTK_BOX (vbox1), gpu_info_box, FALSE, TRUE, 0);
+
     cpu_usage_progress_bar_box = gtk_event_box_new ();
     cpu_usage_progress_bar = gtk_progress_bar_new ();
 #if GTK_CHECK_VERSION(3,0,0)
@@ -149,6 +158,28 @@ GtkWidget* create_main_window (void)
     gtk_widget_show (mem_usage_progress_bar_box);
     gtk_container_add (GTK_CONTAINER (mem_usage_progress_bar_box), mem_usage_progress_bar);
     gtk_box_pack_start (GTK_BOX (system_info_box), mem_usage_progress_bar_box, TRUE, TRUE, 0);
+
+    gpu_usage_progress_bar_box = gtk_event_box_new ();
+    gpu_usage_progress_bar = gtk_progress_bar_new ();
+#if GTK_CHECK_VERSION(3,0,0)
+    gtk_progress_bar_set_show_text (GTK_PROGRESS_BAR (gpu_usage_progress_bar), TRUE);
+#endif
+    gtk_progress_bar_set_text (GTK_PROGRESS_BAR (gpu_usage_progress_bar), _("gpu usage"));
+    gtk_widget_show (gpu_usage_progress_bar);
+    gtk_widget_show (gpu_usage_progress_bar_box);
+    gtk_container_add (GTK_CONTAINER (gpu_usage_progress_bar_box), gpu_usage_progress_bar);
+    gtk_box_pack_start (GTK_BOX (gpu_info_box), gpu_usage_progress_bar_box, TRUE, TRUE, 0);
+
+    gpu_mem_usage_progress_bar_box = gtk_event_box_new ();
+    gpu_mem_usage_progress_bar = gtk_progress_bar_new ();
+#if GTK_CHECK_VERSION(3,0,0)
+    gtk_progress_bar_set_show_text (GTK_PROGRESS_BAR (gpu_mem_usage_progress_bar), TRUE);
+#endif
+    gtk_progress_bar_set_text (GTK_PROGRESS_BAR (gpu_mem_usage_progress_bar), _("gpu memory usage"));
+    gtk_widget_show (gpu_mem_usage_progress_bar);
+    gtk_widget_show (gpu_mem_usage_progress_bar_box);
+    gtk_container_add (GTK_CONTAINER (gpu_mem_usage_progress_bar_box), gpu_mem_usage_progress_bar);
+    gtk_box_pack_start (GTK_BOX (gpu_info_box), gpu_mem_usage_progress_bar_box, TRUE, TRUE, 0);
 
     scrolledwindow1 = gtk_scrolled_window_new (NULL, NULL);
     gtk_widget_show (scrolledwindow1);

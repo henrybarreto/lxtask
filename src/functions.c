@@ -30,6 +30,7 @@
 #include <stdio.h>
 
 #include "functions.h"
+#include "external.h"
 
 extern gint refresh_interval;
 
@@ -40,6 +41,7 @@ gboolean refresh_task_list(void)
     guint i, j;
     GArray *new_task_list;
     gdouble cpu_usage;
+    struct GPUInfo gpu_info;
     guint num_cpus;
     guint64 memory_used;
     char tooltip[256];
@@ -160,6 +162,20 @@ gboolean refresh_task_list(void)
     {
         gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (cpu_usage_progress_bar), cpu_usage);
         gtk_progress_bar_set_text (GTK_PROGRESS_BAR (cpu_usage_progress_bar), tooltip);
+    }
+    gpu_info = get_gpu_info ();
+    sprintf (tooltip,_("GPU usage: %0.0f %%"), gpu_info.gpu_usage * 100.0);
+    if(strcmp(tooltip,gtk_progress_bar_get_text(GTK_PROGRESS_BAR(gpu_usage_progress_bar))))
+    {
+        gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (gpu_usage_progress_bar), gpu_info.gpu_usage);
+        gtk_progress_bar_set_text (GTK_PROGRESS_BAR (gpu_usage_progress_bar), tooltip);
+    }
+    sprintf (tooltip, _("GPU Memory: %d MB of %d MB used"), (int)(gpu_info.gpu_mem_used),
+             (int)(gpu_info.gpu_mem_total));
+    if(strcmp(tooltip,gtk_progress_bar_get_text(GTK_PROGRESS_BAR(gpu_mem_usage_progress_bar))))
+    {
+        gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (gpu_mem_usage_progress_bar),  (gdouble)gpu_info.gpu_mem_used / gpu_info.gpu_mem_total);
+        gtk_progress_bar_set_text (GTK_PROGRESS_BAR (gpu_mem_usage_progress_bar), tooltip);
     }
     return TRUE;
 }
