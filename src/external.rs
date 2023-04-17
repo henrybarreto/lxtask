@@ -1,3 +1,14 @@
+type Bool = std::ffi::c_int;
+const TRUE: Bool = 0;
+const FALSE: Bool = 1;
+
+/// Has GPU checks if the system has a GPU, returning 0 when it exists and 1 when it does not.
+#[no_mangle]
+pub extern "C" fn has_gpu() -> Bool {
+    // TODO: evaluate if the system has a GPU.
+    return TRUE;
+}
+
 #[repr(C)]
 pub struct GPUInfo {
     pub gpu_usage: std::ffi::c_double,
