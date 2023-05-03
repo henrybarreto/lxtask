@@ -1,3 +1,14 @@
+type Bool = std::ffi::c_int;
+const TRUE: Bool = 0;
+const FALSE: Bool = 1;
+
+/// Has GPU checks if the system has a GPU, returning 0 when it exists and 1 when it does not.
+#[no_mangle]
+pub extern "C" fn has_gpu() -> Bool {
+    // TODO: evaluate if the system has a GPU.
+    return TRUE;
+}
+
 #[repr(C)]
 pub struct GPUInfo {
     pub gpu_usage: std::ffi::c_double,
@@ -23,6 +34,20 @@ impl Default for GPUInfo {
             gpu_mem_used: 0,
         }
     }
+}
+
+enum GPUVendor {
+    Nvidia,
+    AMD,
+}
+
+/// GPU_VENDOR is used to cache the GPU vendor.
+/// It is used to avoid calling get_gpu_vendor() multiple times.
+static mut GPU_VENDOR: Option<GPUVendor> = None;
+
+fn get_gpu_vendor() -> GPUVendor {
+    // TODO: evaluate if the GPU is Nvidia or AMD.
+    return GPUVendor::Nvidia;
 }
 
 fn nvidia_gpu_info() -> Result<GPUInfo, std::io::Error> {
@@ -59,11 +84,23 @@ fn nvidia_gpu_info() -> Result<GPUInfo, std::io::Error> {
 /// For now, only Nvidia GPUs are supported. If you want to add support for other GPUs, please open a PR.
 #[no_mangle]
 pub extern "C" fn get_gpu_info() -> GPUInfo {
-    let gpu_info = nvidia_gpu_info();
+    unsafe {
+        if GPU_VENDOR.is_none() {
+            // Avoid calling get_gpu_vendor() multiple times.
+            GPU_VENDOR = Some(get_gpu_vendor());
+        }
 
-    if let Ok(gpu_info) = gpu_info {
-        return gpu_info;
-    } else {
-        return GPUInfo::default();
+        match GPU_VENDOR {
+            Some(GPUVendor::Nvidia) => {
+                if let Ok(gpu_info) = nvidia_gpu_info() {
+                    return gpu_info;
+                } else {
+                    return GPUInfo::default();
+                }
+            }
+            _ => {
+                return GPUInfo::default();
+            }
+        }
     }
 }

@@ -19,6 +19,7 @@
 
 /* 2008-04-26 modified by Hong Jen Yee to be used in LXDE. */
 
+#include "external.h"
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -158,29 +159,29 @@ GtkWidget* create_main_window (void)
     gtk_widget_show (mem_usage_progress_bar_box);
     gtk_container_add (GTK_CONTAINER (mem_usage_progress_bar_box), mem_usage_progress_bar);
     gtk_box_pack_start (GTK_BOX (system_info_box), mem_usage_progress_bar_box, TRUE, TRUE, 0);
-
-    gpu_usage_progress_bar_box = gtk_event_box_new ();
-    gpu_usage_progress_bar = gtk_progress_bar_new ();
+	if(has_gpu()==0) {
+		gpu_usage_progress_bar_box = gtk_event_box_new ();
+		gpu_usage_progress_bar = gtk_progress_bar_new ();
 #if GTK_CHECK_VERSION(3,0,0)
-    gtk_progress_bar_set_show_text (GTK_PROGRESS_BAR (gpu_usage_progress_bar), TRUE);
+		gtk_progress_bar_set_show_text (GTK_PROGRESS_BAR (gpu_usage_progress_bar), TRUE);
 #endif
-    gtk_progress_bar_set_text (GTK_PROGRESS_BAR (gpu_usage_progress_bar), _("gpu usage"));
-    gtk_widget_show (gpu_usage_progress_bar);
-    gtk_widget_show (gpu_usage_progress_bar_box);
-    gtk_container_add (GTK_CONTAINER (gpu_usage_progress_bar_box), gpu_usage_progress_bar);
-    gtk_box_pack_start (GTK_BOX (gpu_info_box), gpu_usage_progress_bar_box, TRUE, TRUE, 0);
+		gtk_progress_bar_set_text (GTK_PROGRESS_BAR (gpu_usage_progress_bar), _("gpu usage"));
+		gtk_widget_show (gpu_usage_progress_bar);
+		gtk_widget_show (gpu_usage_progress_bar_box);
+		gtk_container_add (GTK_CONTAINER (gpu_usage_progress_bar_box), gpu_usage_progress_bar);
+		gtk_box_pack_start (GTK_BOX (gpu_info_box), gpu_usage_progress_bar_box, TRUE, TRUE, 0);
 
-    gpu_mem_usage_progress_bar_box = gtk_event_box_new ();
-    gpu_mem_usage_progress_bar = gtk_progress_bar_new ();
+		gpu_mem_usage_progress_bar_box = gtk_event_box_new ();
+		gpu_mem_usage_progress_bar = gtk_progress_bar_new ();
 #if GTK_CHECK_VERSION(3,0,0)
-    gtk_progress_bar_set_show_text (GTK_PROGRESS_BAR (gpu_mem_usage_progress_bar), TRUE);
+		gtk_progress_bar_set_show_text (GTK_PROGRESS_BAR (gpu_mem_usage_progress_bar), TRUE);
 #endif
-    gtk_progress_bar_set_text (GTK_PROGRESS_BAR (gpu_mem_usage_progress_bar), _("gpu memory usage"));
-    gtk_widget_show (gpu_mem_usage_progress_bar);
-    gtk_widget_show (gpu_mem_usage_progress_bar_box);
-    gtk_container_add (GTK_CONTAINER (gpu_mem_usage_progress_bar_box), gpu_mem_usage_progress_bar);
-    gtk_box_pack_start (GTK_BOX (gpu_info_box), gpu_mem_usage_progress_bar_box, TRUE, TRUE, 0);
-
+		gtk_progress_bar_set_text (GTK_PROGRESS_BAR (gpu_mem_usage_progress_bar), _("gpu memory usage"));
+		gtk_widget_show (gpu_mem_usage_progress_bar);
+		gtk_widget_show (gpu_mem_usage_progress_bar_box);
+		gtk_container_add (GTK_CONTAINER (gpu_mem_usage_progress_bar_box), gpu_mem_usage_progress_bar);
+		gtk_box_pack_start (GTK_BOX (gpu_info_box), gpu_mem_usage_progress_bar_box, TRUE, TRUE, 0);
+	}
     scrolledwindow1 = gtk_scrolled_window_new (NULL, NULL);
     gtk_widget_show (scrolledwindow1);
     gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
